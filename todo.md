@@ -1,0 +1,2 @@
+- ~~install and run app~~
+- ~~modularize repo~~
