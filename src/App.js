@@ -3,9 +3,9 @@ import React from 'react'
 import './App.css'
 
 import { SearchBooks, OpenSearchButton } from './components/search';
-import { Bookshelf } from './components/books';
+import { ListBooks } from './components/books';
 
-import Books from './stores/books';
+import Shelves from './stores/books';
 
 class BooksApp extends React.Component {
 	state = {
@@ -23,23 +23,11 @@ class BooksApp extends React.Component {
 			<div className="app">
 				{this.state.showSearchPage ? (
 					<SearchBooks closeSearch={() => this.setState({ showSearchPage: false })} />
-				) : (
-						<div className="list-books">
-							<div className="list-books-title">
-								<h1>MyReads</h1>
-							</div>
-							<div className="list-books-content">
-								<div>
-									<Bookshelf title="Currently Reading" books={Books.currentlyReading} />
-									<Bookshelf title="Want to Read" books={Books.wantToRead} />
-									
-									<Bookshelf title="Read" books={Books.read} />
-								</div>
-							</div>
-
-							<OpenSearchButton openSearch={() => this.setState({ showSearchPage: true })} />
-						</div>
-					)}
+				) : ( 
+					<ListBooks title="MyReads" shelves={Shelves}>			
+						<OpenSearchButton openSearch={ () => this.setState({ showSearchPage: true }) } />
+					</ListBooks>	
+				)}
 			</div>
 		)
 	}

@@ -14,7 +14,7 @@ class Book extends React.Component {
 			<div className="book-top">
 				<div className="book-cover" style={{ width: 128, height: this.props.cover.height, backgroundImage: `url("${this.props.cover.url}")` }}></div>
 				<div className="book-shelf-changer">
-					<select>
+					<select defaultValue={ this.props.shelfId || "" }>
 						<option value="none" disabled>Move to...</option>
 						<option value="currentlyReading">Currently Reading</option>
 						<option value="wantToRead">Want to Read</option>
@@ -30,8 +30,9 @@ class Book extends React.Component {
 }
 
 // title: string
+// id: string
 // books: BookModel[]
-export class Bookshelf extends React.Component {
+class Bookshelf extends React.Component {
 	render() {
 		return (
 		<div className="bookshelf">
@@ -43,11 +44,44 @@ export class Bookshelf extends React.Component {
 							<Book 
 								title={book.title}
 								authors={book.authors}
-								cover={book.cover} />
+                                cover={book.cover}
+                                shelfId={this.props.id} />
 						</li>)) 
 					}
 				</ol>
 			</div>
 		</div>);
+	}
+}
+
+// title: string
+// shelves: { 
+//	title: string,
+//	id: string,	
+//  books: []
+// }
+// openSearch: () => void
+export class ListBooks extends React.Component {
+	render() {
+		return (
+			<div className="list-books">
+				<div className="list-books-title">
+					<h1>{this.props.title}</h1>
+				</div>
+				<div className="list-books-content">
+					<div>
+						{this.props.shelves.map(shelf => (
+							<Bookshelf 
+								key={shelf.id} 
+								title={shelf.title} 
+								id={shelf.id}
+								books={shelf.books} />
+						))}
+					</div>
+				</div>
+				
+				{ this.props.children }
+				
+			</div>);
 	}
 }
