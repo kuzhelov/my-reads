@@ -6,8 +6,8 @@ import React from 'react'
 //	url: string,
 // 	height: number 
 // }
-// 
-class Book extends React.Component {
+// shelfId?: string
+export class Book extends React.Component {
 	render() {
 		return (
 		<div className="book">
