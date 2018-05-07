@@ -1,5 +1,5 @@
 // book shelves
-export default [
+let shelves =  [
     {
         title: 'Currently Reading',
         id: 'currentlyReading',
@@ -75,3 +75,39 @@ export default [
         ]
     }
 ];
+
+export default shelves;
+
+export function moveBook(book, shelfId) {
+    shelves.forEach(shelf => {
+        const bookIndex = getIndexOfBook(shelf, book);
+        if (bookIndex >= 0) {
+            if (shelf.id === shelfId) {
+                return;
+            }
+
+            shelf.books.splice(bookIndex, 1);
+        }
+
+        if (shelf.id === shelfId) {
+            shelf.books.unshift(book);
+        }
+    });
+
+    return shelves;
+}
+
+// (book) => shelfId
+export function getShelfOfBook(book) {
+    for (let i = 0; i < shelves.length; ++i) {
+        if (getIndexOfBook(shelves[i], book) >= 0) {
+            return shelves[i].id;
+        }
+    }
+
+    return 'none';
+}
+
+function getIndexOfBook(shelf, book) {
+    return shelf.books.findIndex(shelfBook => shelfBook.title === book.title);
+}

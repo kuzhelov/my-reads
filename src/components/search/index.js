@@ -3,7 +3,10 @@ import React from 'react'
 import { Book } from '../books';
 import { search } from '../../BooksAPI';
 
+import { getShelfOfBook } from '../../stores/books';
+
 // closeSearch: () => void
+// moveBook: (book, shelfId) => void
 export class SearchBooks extends React.Component {
 	constructor(props) {
 		super(props);
@@ -14,8 +17,14 @@ export class SearchBooks extends React.Component {
 	render() {
 		return (
 		<div className="search-books">
-			<SearchBooksBar closeSearch={ this.props.closeSearch } onChange={ books => this.setState({ books: books }) } />
-			<SearchBooksResults books={this.state.books} />
+			<SearchBooksBar 
+				closeSearch={ this.props.closeSearch } 
+				onChange={ books => this.setState({ books: books }) } 
+				getShelfOfBook={ book =>  getShelfOfBook(book) }/>
+
+			<SearchBooksResults 
+				books={this.state.books}
+				moveBook={ this.props.moveBook } />
 		</div>);
 	}
 }
@@ -32,11 +41,14 @@ export class OpenSearchButton extends React.Component {
 
 // closeSearch: () => void
 // onChange: () => void
+// getShelfOfBook: (book) => shelfId: string
 class SearchBooksBar extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.lastSearchTime = new Date();
+
+		this.getShelfOfBook = this.props.getShelfOfBook || (() => 'none');
 	}
 
 	handleChange(e) {
@@ -55,7 +67,8 @@ class SearchBooksBar extends React.Component {
 					cover: {
 						url: book.imageLinks.thumbnail,
 						height: 190
-					}
+					},
+					shelfId: this.getShelfOfBook(book)
 				})));
 			});
 	}
@@ -86,6 +99,7 @@ you don't find a specific author or title. Every search is limited by search ter
 }
 
 // books: Book[]
+// moveBook: (book, shelfId) => void
 class SearchBooksResults extends React.Component {
 	render() {
 		return (
@@ -95,7 +109,9 @@ class SearchBooksResults extends React.Component {
 						<Book key={index} 
 							title={book.title} 
 							authors={book.authors} 
-							cover={book.cover} />
+							cover={book.cover}
+							shelfId={book.shelfId}
+							onChange={(newShelfId) => { this.props.moveBook(book, newShelfId)} } />
 					))}
 				</ol>
 			</div>);

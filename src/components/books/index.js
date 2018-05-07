@@ -7,15 +7,20 @@ import React from 'react'
 // 	height: number 
 // }
 // shelfId?: string
+// onChange: (newShelfId: string) => void
 export class Book extends React.Component {
+    handleChange(e) {
+        this.props.onChange && this.props.onChange(e.target.value);
+    }
+
 	render() {
 		return (
 		<div className="book">
 			<div className="book-top">
 				<div className="book-cover" style={{ width: 128, height: this.props.cover.height, backgroundImage: `url("${this.props.cover.url}")` }}></div>
 				<div className="book-shelf-changer">
-					<select defaultValue={ this.props.shelfId || "" }>
-						<option value="none" disabled>Move to...</option>
+					<select defaultValue={ this.props.shelfId || '' } onChange={ this.handleChange.bind(this) }>
+						<option value="moveTo" disabled>Move to...</option>
 						<option value="currentlyReading">Currently Reading</option>
 						<option value="wantToRead">Want to Read</option>
 						<option value="read">Read</option>
@@ -32,6 +37,7 @@ export class Book extends React.Component {
 // title: string
 // id: string
 // books: BookModel[]
+// onChange: (book: Book, newShelfId: string) => void
 class Bookshelf extends React.Component {
 	render() {
 		return (
@@ -45,7 +51,8 @@ class Bookshelf extends React.Component {
 								title={book.title}
 								authors={book.authors}
                                 cover={book.cover}
-                                shelfId={this.props.id} />
+                                shelfId={this.props.id} 
+                                onChange={ (newShelfId) => this.props.onChange(book, newShelfId) } />
 						</li>)) 
 					}
 				</ol>
@@ -60,7 +67,7 @@ class Bookshelf extends React.Component {
 //	id: string,	
 //  books: []
 // }
-// openSearch: () => void
+// moveBook: (book: Book, newShelfId: string) => void
 export class ListBooks extends React.Component {
 	render() {
 		return (
@@ -75,7 +82,8 @@ export class ListBooks extends React.Component {
 								key={shelf.id} 
 								title={shelf.title} 
 								id={shelf.id}
-								books={shelf.books} />
+                                books={shelf.books}
+                                onChange={ (book, newShelfId) => { this.props.moveBook(book, newShelfId); } } />
 						))}
 					</div>
 				</div>
