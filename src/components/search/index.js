@@ -1,11 +1,11 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-import { Book } from '../books';
-import { search } from '../../BooksAPI';
+import { Book } from '../books'
+import { search } from '../../BooksAPI'
 
-import { getShelfOfBook } from '../../stores/books';
+import { getShelfOfBook } from '../../stores/books'
 
-// closeSearch: () => void
 // moveBook: (book, shelfId) => void
 export class SearchBooks extends React.Component {
 	constructor(props) {
@@ -18,7 +18,6 @@ export class SearchBooks extends React.Component {
 		return (
 		<div className="search-books">
 			<SearchBooksBar 
-				closeSearch={ this.props.closeSearch } 
 				onChange={ books => this.setState({ books: books }) } 
 				getShelfOfBook={ book =>  getShelfOfBook(book) }/>
 
@@ -29,17 +28,15 @@ export class SearchBooks extends React.Component {
 	}
 }
 
-// openSearch: () => void
 export class OpenSearchButton extends React.Component {
     render() {
         return (
             <div className="open-search">
-                <a onClick={ this.props.openSearch }>Add a book</a>
+                <Link to='/search'>Add a book</Link>
             </div>);
     }
 }
 
-// closeSearch: () => void
 // onChange: () => void
 // getShelfOfBook: (book) => shelfId: string
 class SearchBooksBar extends React.Component {
@@ -82,7 +79,7 @@ class SearchBooksBar extends React.Component {
 
 	render() {
 		return (<div className="search-books-bar">
-		<a className="close-search" onClick={ () => this.props.closeSearch() }>Close</a>
+		<Link className="close-search" to="/">Close</Link>
 		<div className="search-books-input-wrapper">
 			{/*
 NOTES: The search from BooksAPI is limited to a particular set of search terms.
