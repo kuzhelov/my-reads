@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Book } from '../books'
 import { search } from '../../BooksAPI'
 
-import { getShelfOfBook } from '../../stores/books'
+import { getShelfOfBook, convertToBook } from '../../stores/books'
 
 // moveBook: (book, shelfId) => void
 export class SearchBooks extends React.Component {
@@ -58,16 +58,11 @@ class SearchBooksBar extends React.Component {
 			.then(books => {
 				if (!books || books.error) { return; }
 
-				this.updateBooks(books.map(book => ({
-					title: book.title,
-					authors: book.authors && book.authors.join(', '),
-					cover: {
-						url: book.imageLinks.thumbnail,
-						height: 190
-					},
-					shelfId: this.getShelfOfBook(book)
-				})));
-			});
+				this.updateBooks(books.map(book => {
+					return convertToBook(book, this.getShelfOfBook(book));
+				}));
+			})
+			.catch(error => { this.updateBooks([]); })
 	}
 
 	updateBooks(books) {

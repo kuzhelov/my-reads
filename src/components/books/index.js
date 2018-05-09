@@ -76,15 +76,18 @@ export class ListBooks extends React.Component {
 					<h1>{this.props.title}</h1>
 				</div>
 				<div className="list-books-content">
-					<div>
-						{this.props.shelves.map(shelf => (
-							<Bookshelf 
-								key={shelf.id} 
-								title={shelf.title} 
-								id={shelf.id}
-                                books={shelf.books}
-                                onChange={ (book, newShelfId) => { this.props.moveBook(book, newShelfId); } } />
-						))}
+					<div>      
+						{Object.keys(this.props.shelves).map(id => {
+                            const shelf = this.props.shelves[id];
+                            return (
+                                <Bookshelf 
+                                    key={id} 
+                                    title={shelf.title} 
+                                    id={id}
+                                    books={shelf.books}
+                                    onChange={ (book, newShelfId) => { this.props.moveBook(book, newShelfId); } } />
+                            )}
+                        )}
 					</div>
 				</div>
 				
