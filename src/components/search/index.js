@@ -6,6 +6,8 @@ import { search } from '../../BooksAPI'
 
 import { getShelfOfBook, convertToBook } from '../../stores/books'
 
+import * as _ from 'underscore';
+
 // moveBook: (book, shelfId) => void
 export class SearchBooks extends React.Component {
 	constructor(props) {
@@ -22,7 +24,7 @@ export class SearchBooks extends React.Component {
 				getShelfOfBook={ book =>  getShelfOfBook(book) }/>
 
 			<SearchBooksResults 
-				books={this.state.books}
+				books={ this.state.books }
 				moveBook={ this.props.moveBook } />
 		</div>);
 	}
@@ -48,7 +50,7 @@ class SearchBooksBar extends React.Component {
 		this.getShelfOfBook = this.props.getShelfOfBook || (() => 'none');
 	}
 
-	handleChange(e) {
+	handleChange = _.debounce((e) => {
 		const searchTerm = e.target.value;
 		this.lastSearchTime = new Date();
 
@@ -63,6 +65,11 @@ class SearchBooksBar extends React.Component {
 				}));
 			})
 			.catch(error => { this.updateBooks([]); })
+	}, 500);
+
+	componentWillUnmount() {
+		// to prevent async execution on unmounted component
+		this.handleChange.cancel();
 	}
 
 	updateBooks(books) {
@@ -84,7 +91,9 @@ https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TE
 However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
 you don't find a specific author or title. Every search is limited by search terms.
 */}
-			<input type="text" placeholder="Search by title or author" onChange={ this.handleChange.bind(this) } />
+			<input type="text"
+				placeholder="Search by title or author"
+				onChange={ (e) => { e.persist(); this.handleChange(e) }} />
 		</div>
 	</div>);
 	}
