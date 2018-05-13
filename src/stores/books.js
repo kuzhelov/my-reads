@@ -49,7 +49,7 @@ export function getShelfOfBook(book) {
 }
 
 function getIndexOfBook(shelf, book) {
-    return shelf.books.findIndex(shelfBook => shelfBook.title === book.title);
+    return shelf.books.findIndex(shelfBook => shelfBook.id === book.id);
 }
 
 export function convertToBook(bookAsJson, shelfId) {

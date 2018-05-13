@@ -107,7 +107,7 @@ class SearchBooksResults extends React.Component {
 			<div className="search-books-results">
 				<ol className="books-grid">
 					{this.props.books.map((book, index) => (
-						<Book key={index} 
+						<Book key={book.id} 
 							title={book.title} 
 							authors={book.authors} 
 							cover={book.cover}
