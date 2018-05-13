@@ -19,7 +19,7 @@ class BooksApp extends React.Component {
 		super(props);
 
 		// blocking move book requests processing until shelves are initialized
-		this.currentMoveBookPromise = Promise.reject();
+		this.currentMoveBookPromise = null;
 	}
 
 	componentDidMount() {
@@ -38,17 +38,21 @@ class BooksApp extends React.Component {
 	}
 
 	moveBook(book, shelfId) {
-		// this promise is used to avoid races
-		this.currentMoveBookPromise = this.currentMoveBookPromise.then(() => {
-			this.setState({ shelves: moveBook(book, shelfId) });
+		// here we are at the point when intialization logic is not finished yet
+		if (!this.currentMoveBookPromise) { return; } 
 
-			const originalShelfId = book.shelfId;
-			return update(book, shelfId)
-				.catch(err => {
-					// update has failed on server - return app to the original state
-					this.setState({ shelves: moveBook(book, originalShelfId) });
-				});
-		});
+		// this promise is used to avoid races
+		this.currentMoveBookPromise = this.currentMoveBookPromise
+			.then(() => {
+				this.setState({ shelves: moveBook(book, shelfId) });
+
+				const originalShelfId = book.shelfId;
+				return update(book, shelfId)
+					.catch(err => {
+						// update has failed on server - return app to the original state
+						this.setState({ shelves: moveBook(book, originalShelfId) });
+					});
+			});
 	} 
 
 	render() {
